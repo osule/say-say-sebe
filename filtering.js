@@ -1,6 +1,11 @@
 const { absentInIdMap } = require('./id_map');
+const { config } = require('./config');
 
 const ofInterest = (tweet) => {
+  if (tweet.delete) {
+    return false;
+  }
+  
   if (new Date(tweet.timestamp_ms) < Date.parse('2020-10-16')) {
     return false;
   }
@@ -15,7 +20,9 @@ const ofInterest = (tweet) => {
   if (!tweet.user.verified) {
     return false;
   }
-  if (tweet.text.length < 80) {
+  const optionalKeywords = config.keywords.join('|');
+  const re = new RegExp(optionalKeywords, 'i');
+  if (!re.test(tweet.text)) {
     return false;
   }
 

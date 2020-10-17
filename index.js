@@ -45,24 +45,28 @@ async function start(config) {
   };
   
   const accountIds = identifiedAccounts.map(getId);
+  const sleep = () => new Promise((resolve, reject) => {
+    setTimeout(resolve, 3 * 1000);
+  });
 
-  const stream = filterStream(
+  let stream = filterStream(
     createFilterStreamParams(accountIds),
-    retweetAndLog
+    retweetAndLog,
   );
 
   watchForChangesToConfig().then(() => {
-    stream.destroy();
+    process.nextTick(() => {
+      stream.destroy();
+    });
+    return sleep();
+  }).then(() => {
     start(config);
   });
 
-  watchForChangesToIdMap().then(() => {
-    stream.destroy();
-    start(config);
-  });
-
-  process.on('beforeExit', (code) => {
-    stream.destroy();
+  process.on('SIGINT', async (code) => {
+    process.nextTick(stream.destroy);
+    await sleep();
+    process.exit();
   });
 }
 
