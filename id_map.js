@@ -2,7 +2,9 @@ const yaml = require('js-yaml');
 const fs = require('fs');
 
 const ID_FILE = 'id_map.yml';
-const idMap = yaml.safeLoad(fs.readFileSync(ID_FILE, 'utf8'));
+const idMap =
+  yaml.safeLoad(fs.readFileSync(ID_FILE, { encoding: 'utf8', flag: 'a+' })) ||
+  {};
 
 const toIdMapFormat = (users) =>
   users
@@ -11,31 +13,31 @@ const toIdMapFormat = (users) =>
     }))
     .reduce((start, curr) => Object.assign(start, curr));
 
-const updateIdMap = users => {
+const updateIdMap = (users) => {
   fs.writeFileSync(
     ID_FILE,
     yaml.safeDump(Object.assign({}, idMap, toIdMapFormat(users))),
-    ENCODING
+    'utf8'
   );
 };
 
-const absentInIdMap = screenName => idMap[screenName] === undefined
+const absentInIdMap = (screenName) => idMap[screenName] === undefined;
 
-const presentInIdMap = screenName => idMap[screenName] !== undefined
+const presentInIdMap = (screenName) => idMap[screenName] !== undefined;
 
-const watchForChangesToIdMap = () => 
+const watchForChangesToIdMap = () =>
   new Promise((resolve, reject) => {
     fs.watch(ID_FILE, (eventType, filename) => {
       resolve();
     });
   });
 
-const getId  = (screenName) => idMap[screenName]
+const getId = (screenName) => idMap[screenName];
 
 module.exports = {
   getId,
   updateIdMap,
   presentInIdMap,
   absentInIdMap,
-  watchForChangesToIdMap
+  watchForChangesToIdMap,
 };
