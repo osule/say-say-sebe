@@ -1,0 +1,5 @@
+.env
+node_modules
+*.log
+config.yml
+id_map.yml
