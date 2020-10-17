@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "js-yaml": "^3.14.0",
+    "twitter-lite": "^0.14.0"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "license": "MIT License",
+  "name": "Say say sebe",
+  "version": "0.0.1"
+}
