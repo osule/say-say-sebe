@@ -20,9 +20,15 @@ const ofInterest = (tweet) => {
   if (!tweet.user.verified) {
     return false;
   }
-  const optionalKeywords = config.keywords.join('|');
-  const re = new RegExp(optionalKeywords, 'i');
+  const includeKeywords = config.include_keywords.join('|');
+  let re = new RegExp(includeKeywords, 'i');
   if (!re.test(tweet.text)) {
+    return false;
+  }
+  const avoidKeywords = config.avoid_keywords.join('|');
+
+  re = new RegExp(avoidKeywords, 'i');
+  if (re.test(tweet.text)) {
     return false;
   }
 

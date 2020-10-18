@@ -1,2 +1,6 @@
 screen_names:
   - odootan
+include_keywords:
+  - endsars
+avoid_keywords:
+  - buhari must go
